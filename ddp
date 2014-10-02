@@ -4,20 +4,30 @@
 # usage: ddp <input file> <output file> [block size(default 64K)]
 # dd will be executed with the given input and output file and display a progressbar.
 # for this to work pv must be installed
-[ -z $LINUX_UTILS_LIB ] && LINUX_UTILS_LIB=$(dirname $0)/lib # Resolve libs
 
+# Script initialization
+[ -z $LINUX_UTILS_LIB ] && LINUX_UTILS_LIB=$(dirname $0)/lib # Resolve libs
+[ -d $LINUX_UTILS_LIB ] || { 
+  echo "can't find linux_utils/lib directory!"
+  echo "possible fix: export \$LINUX_UTILS_LIB in .bashrc"
+  exit 127
+}
+
+# Script start
 source $LINUX_UTILS_LIB/colors.sh
 
 if [ $# -lt 2 ]; then
   echo "Usage: $(basename $0) <input file> <output file> [block size(default 64k)]"
   echo "Calls dd and displays a progress bar using pv"
-else
-  $LINUX_UTILS_LIB/require-lib.sh "pv" || {
-    red "Can't display a progress bar without pv!"
-    exit 1
-  } 
-  
-  [ -z $3 ] && blocksize=64K || blocksize=$3
-  pv -tpreb $1 | dd of=$2 bs=$blocksize
+  exit 0
 fi
+
+$LINUX_UTILS_LIB/require-lib.sh "pv" || {
+  red "Can't display a progress bar without pv!"
+  exit 1
+} 
+
+[ -z $3 ] && blocksize=64K || blocksize=$3
+pv -tpreb $1 | dd of=$2 bs=$blocksize
+
 

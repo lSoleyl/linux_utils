@@ -7,10 +7,11 @@ To properly use these scripts from the command line simply add the main director
 
 If you'd rather link the scripts into a directory already in your path, you might have to make sure that the scripts can find the lib folder. You can achieve that by adding <b>export LINUX_UTILS_LIB=(path to lib folder)</b> to your .bashrc
 
-
+These scripts have been developed on and for ubuntu, so it's not guaranteed they will work on other systems.
 
 currently included scripts:
 * ddp - calls dd while displaying progress bar
+* new-script.sh - generates a new linux_utils script template
 
 
 currently included helper scripts:
