@@ -9,7 +9,7 @@ else
   program=$1
   [ -z $2 ] && packet=$program || packet=$2
   
-  which $program && exit 0 # Quit program if packet exists
+  which $program > /dev/null && exit 0 # Quit program if packet exists
   
   read -p "Packet $packet is missing, should it be installed now? (y/n)" yn
   if [ $yn == "y" ]; then
