@@ -15,9 +15,6 @@
 # Script start
 source $LINUX_UTILS_LIB/colors.sh
 
-# TODO remove after all bugs are fixed
-yellow "Warning! Using unstable script version, which is not fully tested"
-
 # Script logic
 
 echo "SSH key generator"
@@ -28,7 +25,7 @@ $LINUX_UTILS_LIB/require-lib.sh "ssh-keygen" "openssh" || {
 }
 
 read -p "Enter keyname (key will be created in ~/.ssh/<name>/): " keyname
-if [ -z $keyname ]; then
+if [ -z "$keyname" ]; then
   yellow "Keyname must be not empty. Aborting script"
   exit 0
 fi 
@@ -43,8 +40,14 @@ fi
 
 if [ -z $skip ]; then
   [ -d ~/.ssh/$keyname ] || mkdir ~/.ssh/$keyname
-  read -p "What to write into the comment section? (eg. mail-adress, leave empty to omit comment) " comment
-  [ -n $comment ] && comment=" -C \"$comment\""
+  read -p "What to write into the comment section? (eg. mail-adress, leave empty for default comment [user@hostname]) " comment
+  [ -n "$comment" ] && comment=" -C \"$comment\""
+  
+  
+  #Remove old key
+  [ -f ~/.ssh/${keyname}/id_rsa ] && {
+    rm ~/.ssh/${keyname}/id_rsa
+  }
   
   #Create the actual key
   ssh-keygen -f ~/.ssh/${keyname}/id_rsa${comment} || {
@@ -55,7 +58,7 @@ fi
 
 read -p "Register key with a server in ~/.ssh/config? (y/n) " regkey
 [ "$regkey" != "y" ] || {
-  setup-ssh-key.sh -key "~/.ssh/$keyname/id_rsa"
+  setup-ssh-key.sh -key ~/.ssh/$keyname/id_rsa
   exit $?
 }
 

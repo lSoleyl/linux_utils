@@ -12,6 +12,8 @@ These scripts have been developed on and for ubuntu, so it's not guaranteed they
 currently included scripts:
 * ddp - calls dd while displaying progress bar
 * new-script.sh - generates a new linux_utils script template
+* new-ssh-key.sh - generate new SSH-key-value pair and optionally setup the key
+* setup-ssh-key.sh - adds existing SSH keys to the ~/.ssh/config to connect a key to a certain host.
 
 
 currently included helper scripts:
