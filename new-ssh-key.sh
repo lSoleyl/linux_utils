@@ -41,7 +41,7 @@ fi
 if [ -z $skip ]; then
   [ -d ~/.ssh/$keyname ] || mkdir ~/.ssh/$keyname
   read -p "What to write into the comment section? (eg. mail-adress, leave empty for default comment [user@hostname]) " comment
-  [ -n "$comment" ] && comment=" -C \"$comment\""
+  [ -n "$comment" ] && comment=" -C $comment"
   
   
   #Remove old key
