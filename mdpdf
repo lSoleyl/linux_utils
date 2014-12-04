@@ -1,0 +1,65 @@
+#!/bin/bash
+# Description:
+# mdpdf - Converts Markdown files to PDF
+# usage: mdpdf <MD-File>
+
+
+# Script initialization
+[ -z $LINUX_UTILS_LIB ] && LINUX_UTILS_LIB=$(dirname $0)/lib # Resolve libs
+[ -d $LINUX_UTILS_LIB ] || {
+  echo "can't find linux_utils/lib directory!"
+  echo "possible fix: export \$LINUX_UTILS_LIB in .bashrc"
+  exit 127
+}
+
+# Script start
+source $LINUX_UTILS_LIB/colors.sh
+
+if [ $# -lt 1 ]; then
+  echo "usage: $(basename $0) <MD-File>"
+  echo "Converts Markdown files to PDF"
+  exit 0
+fi
+
+
+# Script logic
+
+## Install
+which markdown-pdf > /dev/null || {
+  which npm > /dev/null && {
+    yellow "Couldn't find npm module 'markdown-pdf', but npm was found."
+    read -p "Should the module be installed now? (y/n)" yn
+    if [ "$yn" == "y" ]; then
+      echo "Executing: sudo npm install markdown-pdf --global"
+      sudo npm install markdown-pdf --global
+    fi
+  }
+
+  which markdown-pdf > /dev/null || {
+    red "'markdown-pdf' missing!"
+    exit 1
+  }
+
+}
+
+## Get CSS-Path
+cssfile=$(dirname $0)/data/mdpdf.css
+
+[ -f $cssfile ] || {
+  # Try another method
+  cssfile=$(dirname $(readlink -m $0))/data/mdpdf.css
+  [ -f $cssfile ] || {
+    cssfile=
+    yellow "Couldn't find CSS file, PDF might look crappy."
+    echo "CSS should be located in ./data/mdpdf.css relative to this script"
+  }
+}
+
+## Generate PDF
+
+[ -n "$cssfile" ] && {
+  markdown-pdf -s $cssfile $1
+} || { ## No CSS supplied
+  markdown-pdf $1
+}
+
